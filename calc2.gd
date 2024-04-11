@@ -53,20 +53,8 @@ class Tests:
 		
 		
 	func workbanch_run():
-		var m1 = M.new().i([dd(77), tt(10,2)])
-		var m2 = M.new().i([dd(77), tt(10,2)])
 		
-		var mult = Operators.mult(m1, dd(76))
-		var mult2 = Operators.mult(dd(76), m2)
-
-		#var expected = M.new().i([dd(77), dd(76), tt(10,2)])
-		assert(mult.total_distance[0].module == 77)
-		assert(mult.total_distance[1].module == 76)
-		assert(mult.total_tempo[0].module == 10)
-		assert(mult2.total_distance[0].module == 77)
-		assert(mult2.total_distance[1].module == 76)
-		assert(mult2.total_tempo[0].module == 10)
-		
+		# Multiplicat m com m _multi_mm
 	
 		
 		#var g = Operators.div()
@@ -85,9 +73,25 @@ class Tests:
 		ok_sub()
 		err_sub()
 		single_unit_multip_divide_dimension()
-		assert_multi_unit_multiplication()
+		assert_multip_unit()
+		assert_multip_M()
 	
-	func assert_multi_unit_multiplication():
+	func assert_multip_M():
+		var m1 = M.new().i([dd(77), tt(10,2)])
+		var m2 = M.new().i([dd(77), tt(10,2)])
+		
+		var mult = Operators.mult(m1, dd(76))
+		var mult2 = Operators.mult(dd(76), m2)
+
+		#var expected = M.new().i([dd(77), dd(76), tt(10,2)])
+		assert(mult.total_distance[0].module == 77)
+		assert(mult.total_distance[1].module == 76)
+		assert(mult.total_tempo[0].module == 10)
+		assert(mult2.total_distance[0].module == 77)
+		assert(mult2.total_distance[1].module == 76)
+		assert(mult2.total_tempo[0].module == 10)
+	
+	func assert_multip_unit():
 		var mult = Operators.mult(dd(77), tt(10,2))
 		var expected = M.new().i([dd(77), tt(10,2)])
 		assert(mult.total_mass == expected.total_mass)

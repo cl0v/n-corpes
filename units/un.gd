@@ -27,10 +27,13 @@ func getPrefix(c)->int:
 		return 1
 	return SI_prefix[c]
 
-func copy()-> Un:
+func copy():
 	# Acho que esse copy não funciona
 	var s = self
 	return self
 
 func unitString() -> String:
 	return 'neutro(s)'
+
+func getMod1():
+	return self.copy().i(1,1)

@@ -13,8 +13,6 @@ func m(_module:float, _dimension: int = 1, _prefix=null) -> Mass:
 func _ready():
 	Tests.new().i(d(1),t(1),m(1)).run_all()
 	
-	
-
 
 func _input(event):
 	if Input.is_key_pressed(KEY_Q):
@@ -50,9 +48,12 @@ class Tests:
 		
 		# Older important
 		test_print()
-		
-		
+
+
 	func workbanch_run():
+		#test_the_reduce_distortion()
+		
+		
 		
 		# Multiplicat m com m _multi_mm
 	
@@ -62,6 +63,20 @@ class Tests:
 		#assert(Operators._send_mult(dd(77, 3), tt(10, 1)) == {'m':3, 's':1})
 		#Operators._mult_module({'m':3, 's':1}, {'g':1, 's':1, 'm':1},) == {'m':4, 's': 2, 'g':1}
 		pass
+	
+	func test_un_module():
+		var _r = dd(20,2)
+		assert(_r.getMod1().module == 1)
+		assert(_r.module == 20)
+		assert(_r.getMod1().dimension == 1)
+		assert(_r.dimension == 2)
+	
+	func test_the_reduce_distortion():
+		var m1 = M.new().i([dd(77), tt(10,2), dd(10, 2), mm(20, 2)])
+		assert(m1.reduce().dl[0] == dd(770, 3))
+		assert(m1.reduce().tl[0] == tt(10, 2))
+		#assert(m1.reduce().ml[0] == mm(20, 2))
+		
 	
 	func test_print():
 		# Testa as principais funcoes de print
@@ -84,21 +99,21 @@ class Tests:
 		var mult2 = Operators.mult(dd(76), m2)
 
 		#var expected = M.new().i([dd(77), dd(76), tt(10,2)])
-		assert(mult.total_distance[0].module == 77)
-		assert(mult.total_distance[1].module == 76)
-		assert(mult.total_tempo[0].module == 10)
-		assert(mult2.total_distance[0].module == 77)
-		assert(mult2.total_distance[1].module == 76)
-		assert(mult2.total_tempo[0].module == 10)
+		assert(mult.dl[0].module == 77)
+		assert(mult.dl[1].module == 76)
+		assert(mult.tl[0].module == 10)
+		assert(mult2.dl[0].module == 77)
+		assert(mult2.dl[1].module == 76)
+		assert(mult2.tl[0].module == 10)
 	
 	func assert_multip_unit():
 		var mult = Operators.mult(dd(77), tt(10,2))
 		var expected = M.new().i([dd(77), tt(10,2)])
-		assert(mult.total_mass == expected.total_mass)
-		assert(mult.total_mass.size() == expected.total_mass.size())
-		assert(mult.total_distance.size() == expected.total_distance.size())
-		assert(mult.total_distance[0].module == 77)
-		assert(mult.total_tempo.size() == expected.total_tempo.size())
+		assert(mult.ml == expected.ml)
+		assert(mult.ml.size() == expected.ml.size())
+		assert(mult.dl.size() == expected.dl.size())
+		assert(mult.dl[0].module == 77)
+		assert(mult.tl.size() == expected.tl.size())
 		
 	
 	func single_unit_multip_divide_dimension():

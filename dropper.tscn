@@ -1,0 +1,19 @@
+[gd_scene load_steps=3 format=3 uid="uid://l7pckwt7pptf"]
+
+[ext_resource type="PackedScene" uid="uid://crlsseiccc8bh" path="res://corpse.tscn" id="1_o25lv"]
+
+[sub_resource type="GDScript" id="GDScript_0akg7"]
+resource_name = "drop-corpse"
+script/source = "extends \"res://Corpse.gd\"
+
+const MOVE_SPEED = 1
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(d):
+	var v = Vector2.from_angle(Vector2(0,1).angle()) * MOVE_SPEED
+	global_translate(v)
+	pass
+"
+
+[node name="Dropper" instance=ExtResource("1_o25lv")]
+script = SubResource("GDScript_0akg7")

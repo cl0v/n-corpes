@@ -1,28 +1,28 @@
 class_name Tools extends Node
 
+const default_units = {
+	'g': 0,
+	'm': 0,
+	's': 0,
+}
+
 # Organiza as unidades de medida com as dimensoes corretas.
 # Resultado de uma soma de valores 
-func sum_dimensions(first: Dictionary, second: Dictionary) -> Dictionary:
-	var dict = {}
-	dict.merge(first)
-	for d in second:
-		if(dict.has(d)):
-			dict[d]+= second[d]
-		else:
-			dict[d]=second[d]
-	return dict
+func sum_dimensions(first: Array[int], second:  Array[int]) -> Array[int]:
+	var _array: Array[int] = [0,0,0]
+	for idx in range(0,3):
+		_array[idx] = first[idx]+second[idx]
+	return _array
 
 # Subtraia dimensões
 # A ordem aqui é muito importante
-func sub_dimensions(first: Dictionary, second: Dictionary) -> Dictionary:
-	var dict = {}
-	dict.merge(first)
-	for d in second:
-		if(dict.has(d)):
-			dict[d]+= -second[d]
-		else:
-			dict[d]=-second[d]
-	return dict
+func sub_dimensions(first: Array[int], second: Array[int]) -> Array[int]:
+	var _array: Array[int] = [0,0,0]
+	for idx in range(0,3):
+		_array[idx] = first[idx]-second[idx]
+	return _array
+
+#func 
 #
 ## Recebe o expoente na base 10 de numeros abaixo de 0
 #func get_e_exp(value):

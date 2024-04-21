@@ -2,77 +2,60 @@ extends Node2D
 
 ## Legenda
 # Letra; vírgula; Valor numérico; ('m', 3) é pow('m', 3) 
-
-var relacoes: Dictionary = {
-	'v' = "'m', 3", # Volume
-	'd' = "'g'/ 'm', 3", # Densidade
-	
-}
+#
+#var relacoes: Dictionary = {
+	#'v' = "'m', 3", # Volume
+	#'d' = "'g'/ 'm', 3", # Densidade
+	#
+#}
 
 const area: Dictionary= {'m': 2}
 const volume: Dictionary= {'m': 3}
-const densidade: Dictionary = {'m': -3, 'g': 1}
+const densidade: Array[int] = [1,-3,0] # {'m': -3, 'g': 1}
 const aceleracao: Dictionary = {'m': 1, 's':-2}
-const newton: Dictionary = {'m': 1, 's':-2, 'kg': 1}
+const newton: Array[int] = [1, 1, -2] # { 'g': 1, 'm': 1, 's':-2}
 const t:  Dictionary= {'s': 2}
 const tempo:  Dictionary= {'s': 2}
-const m:String = 'm'
-const s:String = 's'
-const g:String = 'g'
-# Como algumas unidades como Newton precisam de kg
-# Se ve a necessidade de implementa o kg logo.
-const kg: String = 'kg'
+
+
+var constante_gravitacao_universal: R = r(6.67408*pow(10, -11-6), [0,0,0]).copy()
+
+var force_law_divide_time = tim(1,2).copy().invert()
+var force_law_mass = pes(1, 1).copy()
+var force_law_distance = dis(1,1).copy()
+
+var default_mass_distance_relation = default().mult(dis(1, 2)).mult(pes(1,2).invert())
+#var force_law = R.new().a(1, densidade).invert().mult(force_law_divide_time)
+var module_newton = default().mult(pes(1,1)).mult(dis(1,1)).mult(tim(1,-2))
+var gravitacao_universal: R = r(6.67408*pow(10, -11-3), newton).copy().mult(dis(1,2)).mult(pes(1,-2)).copy()
+var massa_terra = pes(5973332 * pow(10,21), 1).copy()
+var objectTo_terra_centro = dis(pow(6378137, 1), 1)
+
+
+const noPrefix = ['','','']
+
+func default(v=1, d:Array[int]=[0,0,0]):
+	return R.new().a(v,d, noPrefix)
+func tim(v, d) -> Tempo:
+	return Tempo.new().instance(v,d,noPrefix)
+func pes(v,d)->Peso:
+	return Peso.new().instance(v,d,noPrefix)
+func dis(v,d)->Distancia:
+	return Distancia.new().instance(v,d,noPrefix)
 
 #main
 func _ready():
-	
+	default_mass_distance_relation.print('default relation')
+	gravitacao_universal.print('Gravitação universal')
+	print(gravitacao_universal.value * pow(10,16))
+	# massa_terra.copy().po(-2).print('mt')
+	#var x = massa_terra.copy().po(-2).div(objectTo_terra_centro.po(-2))
+	#x.print('x: ')
+	# print(default_mass_distance_relation)
 	run_tests()
-	var r_massa = r(5.972 * pow(10,24), {kg : 2})
-	var r_distancia = r(pow(6.371 * pow(10, 6), 2), {'m': 2})
-	var gravitacao: R = r(6.67408*pow(10, -11), newton).mult(r(1, area)).mult(r(1, {kg: -2}))
-	#var x = r(5.972 * pow(10,24) * )
-	#gravitacao.print('Gravitação')
-	#var r_massa = r(5.972 * pow(10,24), {kg : 2})
-	#var r_distancia = r(pow(6.371 * pow(10, 6), 2), {m: 2})
-	##var r_massa = r(1, {kg : 1})
-	##var r_distancia = r(1, {m: 1})
-	#
-	#var x2 = r_massa.div(r_distancia)
-	#var x1 = x2.invert()
-	#
-	#var x0 = r_massa.sqt().div(r(1.5569243271*pow(10,19), tempo))
-	#var sqrt_massa = r_massa.sqt()
-	#
-	#sqrt_massa.mult(x0).mult(x1).mult(x2).print('Terra gravidade')
+
+	# gravitacao_universal.print('Gravitacao universal')
 	
-	#var final = x2.mult(x1)
-	#var inicio = r_massa.sqt().mult(r_distancia.sqt())
-	##inicio.print('i')
-	##print(sqrt(inicio.value))
-	#var tempo = inicio.sqt()
-	#tempo.print()
-	#var s2 = r_massa.mult(r_distancia).mult(r_distancia.mult(r_distancia).div(r_massa.mult(r_massa)))
-	#gravitacao.mult(x2).print('Força da Gravidade')
-	#s2.mult(x2).print('S2')
-	#var forca_gravitacional = gravitacao.mult(massa.div(distancia))
-	##var acc = r(77, {'kg':1}).div(forca_gravitacional)
-	#forca_gravitacional.div(r(1, {kg:1})).print()
-	#var x = distancia.div(massa) # d2/M.m
-	#var x = x_massa.div(x_distancia).invert()
-	#var x2 = x_massa.div(x_distancia)
-	#var reduce_force = x2.mult(x.invert())
-	#r(1, {kg:1}).mult(reduce_force).print()
-	#r(1,{kg:1}).mult(r(1,{m:1})).mult(x)
-	
-	#gravitacao.div(x).print()
-	
-	#var forca_resultante = u(0.1, kg, 1).mult_r(r(50, aceleracao))
-	#r(100, newton).print()
-	#
-	#var relacaoDensidadeFerro = u(7.85 * pow(10, 6), g).div_au(u(1,m,3))
-	#var rdFerro= r(7.85 * pow(10, 6), densidade)
-	#var relacaoDensidadeFerro2 = relacaoDensidadeFerro.mult(relacaoDensidadeFerro)
-	#relacaoDensidadeFerro2.print()
 	
 # Doc [read]:
 	# Lê a forma correta de pronunciar a expressão.
@@ -84,24 +67,89 @@ func u(value: float, unit: String, dimension: int = 1) -> U:
 	#u.read_pt(value, unit, dimension)
 	return u
 
-func r(value: float, unit_dimension: Dictionary) -> R:
+func r(value: float, units: Array[int]) -> R:
+	if(units.size() != 3):
+		print('Ocorreu um erro na criação do R')
+		return null
 	var r = R.new()
-	r.a(value, unit_dimension)
+	r.a(value, units)
 	return r
 
+func newObj(obj):
+	return R.new().a(obj.value, obj.unidades)
+
+func _input(event):
+	if Input.is_key_pressed(KEY_Q):
+		get_tree().quit()
+		
+
+# Formula = 1 / (densidade * tempo^2) => r(1, densidade).mult(temp(1)
+func assert_build_gravity_base_on_dimensions_formula():
+	assert(r(1, densidade + [0,0,2]).unidades == [1,-3,2] )
+	#assert(constante_gravitacao_universal.mult())
+	
+func assert_gravity():
+	# A massa maior deve estar sempre na frente nos calculos.
+	# O Mzão representa a maior massa, pois ela quem prevalece e exerce forca sob a massa menor.
+	# 
+	# Pergunta: Qual a diferença de representar a massa menor como o Mzão?
+	var massa_terra = pes(5973332 * pow(10,21), 1) 
+	var objeto = pes(1,1)
+	var distancia_terra_mar = dis(pow(6378137, 1), 1)
+	var d2 = distancia_terra_mar.mult(distancia_terra_mar)
+	var m2 = massa_terra.mult(pes(1,1))
+	
+	var slice = m2.div(d2)
+	#var forca_gravitacional = 
+	
+	assert(gravitacao_universal.copy().mult(slice).unidades == newton)
+	assert(gravitacao_universal.copy().mult(slice).value > 9.799)
+	#print('Força da gravidade aqui na terra: ',gravitacao_universal.copy().mult(slice).print().value)
+	gravitacao_universal.copy().mult(slice).print('Força da gravidade aqui na terra')
+	
+	#var _accel = 
+	
+	#var gravitacao = gravitacao_universal.mult()
+func assert_pow_vars():
+	var x1 = R.new().a(1, [1,0,0])
+	assert(R.new().a(1, [1,0,0]).unidades == [1,0,0])
+	assert(R.new().a(1, [1,0,0]).po().unidades == [2,0,0])
+	assert(R.new().a(1, [1,0,0]).po().unidades == [2,0,0])
+	assert(R.new().a(x1.value, x1.unidades).po().unidades == [2,0,0])
+	assert(R.new().a(x1.value, x1.unidades).po().unidades == [2,0,0])
+	assert(x1.po().unidades == [2,0,0])
+	assert(x1.po().unidades == [4,0,0])
+	
+	assert(R.new().a(massa_terra.value, massa_terra.unidades).unidades == [1, 0, 0])
+	assert(R.new().a(massa_terra.value, massa_terra.unidades).po().unidades == [2,0,0])
+	assert(R.new().a(massa_terra.value, massa_terra.unidades).unidades ==[1, 0, 0] )
+	assert(massa_terra.po().value > 35680695182223 * pow(10,21))
+
 func run_tests():
+	assert_pow_vars()
+	assert_gravity()
+	assert(Peso.new().instance(4,2).value == 4)
+	assert(Peso.new().instance(2,3).unidades[0] == 3)
+	assert(Distancia.new().instance(4,2).value == 4)
+	assert(Tempo.new().instance(4,2).value == 4)
+	assert(Distancia.new().instance(pow(6378137, 2), 2).value == 40680631590769)
+	
+	
+	
 	var t: Tools = Tools.new()
-	print(t.sum_dimensions({'m':3, 's':1}, {'g':1, 's':1, 'm':1},) == {'m':4, 's': 2, 'g':1})
-	print(t.sub_dimensions({'m':3, 's':1}, {'g':1, 's':1, 'm':1},) == {'m':2, 's': 0, 'g':-1})
-	print(R.new().a(10, {'m':2}).check_duplicated_units(R.new().a(10, {'m':2})) == true)
-	print(R.new().a(100, {'m':2}).sqt().value == 10)
-	print(R.new().a(9, {'m':2}).sqt().value == 3)
-	print(R.new().a(81, {'m':2}).sqt().value == 9)
-	print(R.new().a(100, {'m':2}).sqt().unidades == {'m':1})
-	print(R.new().a(10, {'m':2}).check_duplicated_units(R.new().a(10, {'m':1})) == false)
-	print(R.new().a(10, {'m':2, 'f': 1}).check_duplicated_units(R.new().a(10, {'m':2})) == false)
-	print(R.new().a(10, {'m':2, 'f': 1}).check_duplicated_units(R.new().a(10, {'f':2, 'm':1})) == false)
-	print(R.new().a(10, {'f':1, 'm': 2}).check_duplicated_units(R.new().a(10, {'m':2, 'f':1})) == true)
-	print(R.new().a(10, {'f': 1, 'a': 2}).invert().unidades == {'f': -1, 'a': -2})
-	print(R.new().a(10, {'f': 1, 'a': 2}).invert().value == 10)
+	assert(t.sum_dimensions([0,3,1], [1,1,1]) == [1,4,2])
+	assert(t.sub_dimensions([0,3,1], [1,1,1]) == [-1,2,0])
+	assert(Distancia.new().instance(10, 2).check_duplicated_units(Distancia.new().instance(10, 2)) == true)
+	assert(Distancia.new().instance(100, 2).sqt().value == 10)
+	assert(Distancia.new().instance(9, 2).sqt().value == 3)
+	assert(Distancia.new().instance(81, 2).sqt().value == 9)
+	assert(Distancia.new().instance(100, 2).sqt().unidades == [0,1,0])
+	assert(Distancia.new().instance(27, 3).sqt(3).value == 3)
+	assert(Distancia.new().instance(27, 3).sqt(3).unidades == [0,1,0])
+	assert(Distancia.new().instance(10, 2).check_duplicated_units(R.new().a(10, [0,2,0])))
+	assert(R.new().a(10, [0,2,1]).check_duplicated_units(Distancia.new().instance(10, 2)) == false)
+	assert(R.new().a(10, [0,2,1]).check_duplicated_units(R.new().a(10, [0,1,2])) == false)
+	assert(R.new().a(10, [0,2,1]).check_duplicated_units(R.new().a(10, [0,2,1])) == true)
+	assert(R.new().a(10, [2,0,1]).invert().unidades == [-2,0,-1])
+	assert(R.new().a(10, [2,0,1]).invert().value == 10)
 	#print(Tools.new().get_e_exp(0.00000006678) == 11)

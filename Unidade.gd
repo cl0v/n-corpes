@@ -44,18 +44,18 @@ func mult(u: U) -> U:
 	res.dimension = u.dimension + dimension
 	res.unit = unit
 	return res
-
-# _au representa outra unidade
-func mult_au(u: U) -> R:
-	var r: R = R.new()
-	r.a(u.value * value, {unit : dimension, u.unit : u.dimension})
-	return r
-
-# Multiplica uma relação
-func mult_r(r: R) -> R:
-	var res: R= R.new()
-	res.a(r.value * value, Tools.new().sum_dimensions({unit:dimension}, r.unidades))
-	return res
+#
+## _au representa outra unidade
+#func mult_au(u: U) -> R:
+	#var r: R = R.new()
+	#r.a(u.value * value, {unit : dimension, u.unit : u.dimension})
+	#return r
+#
+## Multiplica uma relação
+#func mult_r(r: R) -> R:
+	#var res: R= R.new()
+	#res.a(r.value * value, Tools.new().sum_dimensions({unit:dimension}, r.unidades))
+	#return res
 
 func div(u: U) -> U:
 	if(u.unit != unit):
@@ -67,10 +67,10 @@ func div(u: U) -> U:
 	return res
 
 # _au representa outra unidade
-func div_au(u: U) -> R:
-	var r: R = R.new()
-	r.a(value / u.value , {unit : dimension, u.unit : -u.dimension})
-	return r
+#func div_au(u: U) -> R:
+	#var r: R = R.new()
+	#r.a(value / u.value , {unit : dimension, u.unit : -u.dimension})
+	#return r
 
 func print():
 	print(value)

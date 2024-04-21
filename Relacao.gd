@@ -1,35 +1,54 @@
 class_name R extends Node
 # R representa a relação de medidas.
 
-# Valor da relação
+# Valor da relação (modulo)
 var value: float = 1
-# Unidade de medida e dimensão (m^3) (s^2) (s^-2) 
-var unidades: Dictionary = {}
+# Sempre na ordem de grama, metro, segundo *GMS*
+var unidades: Array[int] = [0,0,0]
+
+# k Quilo, M Mega, G Giga, c centi, etc
+# o funcionamento correto deve informar 
+var preffix: Array[String] = ['','','']
+
+const _un = ['g', 'm', 's']
+
+#var unidades: Dictionary = {'g': 0, 'm': 0, 's':0}
+# Sendo segundo na segunda dimensão, distancia na terceira e peso na primeira
+const proposed_dimension: Dictionary = {'m': 3, 's': 2, 'g':1}
+
 
 # Isso é um Vetor Tridimencional.
 # Sendo a massa
 # O tempo até minha posição (é constante nas leis de newton)
 # O modulo da distancia até
-
-# Assign
-func a(_value: float, _units: Dictionary) -> R:
+func a_dict(_value: float, _units: Dictionary, _preffix = preffix) -> R:
+	preffix.assign(_preffix)
 	value = _value
-	unidades = _units
+	unidades = [_units['g'], _units['m'], _units['s']]
 	return self
 
-func sum(r:R) -> R:
+# Assign
+func a(_value: float, _units: Array[int], _preffix = preffix) -> R:
+	preffix.assign(_preffix)
+	value = _value
+	unidades.assign(_units)
+	return self
+
+func countDimensions(_unit: String) -> int:
+	var idx = _un.find(_unit)
+	return unidades[idx]
+
+func sum(r:R):
 	if(check_duplicated_units(r)):
 		print('Ainda não sei somar relações de unidades diferentes')
 		return null
-	var res: R= R.new()
-	return res
+	return 'Erro na soma'
 
-func sub(r:R) -> R:
+func sub(r:R):
 	if(check_duplicated_units(r)):
 		print('Ainda não sei subtrair relações de unidades diferentes')
 		return null
-	var res: R= R.new()
-	return res
+	return 'Erro na subtracao'
 
 
 func copy():
@@ -42,51 +61,38 @@ func check_duplicated_units(r:R)-> bool:
 
 # Multiplica uma relação
 func mult(r: R) -> R:
-	var res: R= R.new()
-	res.a(r.value * value, Tools.new().sum_dimensions(unidades, r.unidades))
-	return res
+	return a(value * r.value, Tools.new().sum_dimensions(unidades, r.unidades))
 
 # Divide uma relação
 func div(r: R)-> R:
-	return mult(r).invert()
+	return self.a(value / r.value, Tools.new().sub_dimensions(unidades, r.unidades))
 
 func invert() -> R:
-	var res: R= R.new()
-	var _uni = {}
-	for i in unidades:
-		_uni[i] = -1 * unidades[i]
-	return res.a(value, _uni)
+	unidades.assign(unidades.map(_filter_invert))
+	return self
 
-func sqt() -> R:
-	var res: R = R.new()
-	var _uni = {}
-	for i in unidades:
-		_uni[i] = unidades[i]/2
-	res.a(sqrt(value), _uni)
-	return res
 
-func print(text:String, show:bool=true, cientifica: bool = true):
-	print(text)
+func _filter_invert(number):
+	return int(number * -1)
+
+func sqt(exp: int = 2) -> R:
+	value = pow(value, 1.0/float(exp))
+	unidades.assign(unidades.map(func(num): return num / exp))
+	return self
+
+func po(exp: int = 2) -> R:
+	value = pow(value, exp)
+	unidades.assign(unidades.map(func(num): return num * exp))
+	return self
+
+func print(text:String, show:bool=true, cientifica: bool = true)-> void:
 	var relations = {
-		{'m': 3} : 'volume',
-		{'m': -3, 'g': 1}: 'densidade',
-		{'m': 1, 's':-2}: 'aceleracao',
-		{'m': 1, 's':-2, 'kg': 1}: 'newton',
+		[0,3,0] : 'volume (s)',
+		[1,-3,0]: 'densidade',
+		[0,1,-2]: 'aceleracao',
+		[1,1,-2]: 'newton(s)',
 	}
-	# Define a unidade de medida
-	var _units = ''
-	if(relations.get(unidades) == null or show):
-		var uni = ''
-		for i in (unidades.keys()):
-			if(unidades[i] == 1):
-				uni += str(i)
-			else:
-				uni += str(i, '^', unidades[i])
-			uni += ';'
-		_units = uni
-	else:
-		_units = relations.get(unidades)
-	# Define o valor em caso de notacao cientifica
+	
 	var _value: String = ''
 	if(cientifica):
 		if(value > 10):
@@ -101,4 +107,9 @@ func print(text:String, show:bool=true, cientifica: bool = true):
 			_value = str(value)# str(v,' e', )
 	else:
 		_value = str(value)
-	print(str(_value, ' ', _units))
+	var _units
+	if(relations.get(unidades) != null):
+		_units = relations.get(unidades)
+	else:
+		_units = str(preffix[0],'g^',unidades[0], preffix[1],'.m^', unidades[1], preffix[2] ,'.s^', unidades[2])
+	print(text, ': ',str(_value, ' ', _units))

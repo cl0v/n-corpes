@@ -48,10 +48,11 @@ class Tests:
 		
 		# Older important
 		test_print()
+		test_un_module()
 
 
 	func workbanch_run():
-		#test_the_reduce_distortion()
+		test_the_reduce_distortion()
 		
 		
 		
@@ -72,11 +73,16 @@ class Tests:
 		assert(_r.dimension == 2)
 	
 	func test_the_reduce_distortion():
-		var m1 = M.new().i([dd(77), tt(10,2), dd(10, 2), mm(20, 2)])
-		assert(m1.reduce().dl[0] == dd(770, 3))
-		assert(m1.reduce().tl[0] == tt(10, 2))
-		#assert(m1.reduce().ml[0] == mm(20, 2))
+		# Reduced M
+		var m1 = M.new().i([dd(77), tt(10,2), dd(10, 2), mm(20, 2)]).reduce()
+		var m2 = M.new().i([dd(77), dd(10, 2), mm(20, 2)]).reduce()
 		
+		assert(m2.tl.size() == 0)
+		
+		assert(m1.dl[0] == dd(770, 3))
+		assert(m1.tl[0] == tt(10, 2))
+		assert(m1.ml[0] == mm(20, 2))
+	
 	
 	func test_print():
 		# Testa as principais funcoes de print

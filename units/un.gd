@@ -6,13 +6,15 @@ class_name Un extends Node
 # Formula * 1 * 1 * 1
 # + 1 não pode pois neutralizará a formula quando adição, desviando 1 do centro
 
-var nome: String = 'Neutro'
+var nome: String
 var module: float = 1 # Equivalente a Value e 1 para .
 var dimension: int = 1
-#const default_unit: String = 'n' # neutro
-#const default_dimension:int = 0 # Para multiplicação 0 para soma 1
 
-#var actual_dimension: int = default_dimension
+func _I(_module:float, _dimension: int, _prefix, _nome: String = 'Neutro') -> Un:
+	nome = _nome
+	dimension=_dimension
+	module= _module * getPrefix(_prefix)
+	return self
 
 
 const SI_prefix = {
@@ -30,10 +32,11 @@ func getPrefix(c)->int:
 func copy():
 	# Acho que esse copy não funciona
 	var s = self
-	return self
+	return s
 
 func unitString() -> String:
 	return 'neutro(s)'
 
 func getMod1():
+	# Modulo 1 na dimensão 1
 	return self.copy().i(1,1)
